@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Delicias y Antojos, Caprichos | Talpa de Allende</title>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Quicksand', sans-serif;
+      background: #fffaf5;
+      color: #4e3e2e;
+      overflow-x: hidden;
+    }
+    .container { max-width: 1280px; margin: 0 auto; padding: 1rem 1.5rem 3rem; position: relative; z-index: 2; }
+    
+    /* Logo y bienvenida - CÍRCULO GRANDE (logo cubre completamente, sin click interactivo) */
+    .hero-logo-area { background: white; border-radius: 48px; box-shadow: 0 8px 20px rgba(0,0,0,0.05); padding: 1.8rem; margin-bottom: 2rem; text-align: center; }
+    .logo-circulo-grande { 
+      width: 100%; 
+      max-width: 280px; 
+      height: auto; 
+      aspect-ratio: 1/1; 
+      background: #FFF3E6; 
+      border-radius: 50%;  /* REDONDO */
+      margin: 0 auto 1rem auto; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      border: none;
+      overflow: hidden; 
+      pointer-events: none;  /* Deshabilita clics en el contenedor del logo */
+      box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+    }
+    .logo-preview { 
+      width: 100%; 
+      height: 100%; 
+      object-fit: cover; /* La imagen cubre TODO el círculo sin deformarse */
+      display: block;
+    }
+    .logo-placeholder-text { 
+      font-size: 1.2rem; 
+      color: #c7a67a; 
+      padding: 20px; 
+      text-align: center; 
+      font-weight: 500;
+    }
+    .welcome-text h2 { font-size: 2rem; color: #be7c54; margin-top: 15px; }
+    .slogan { font-size: 1.2rem; font-style: italic; background: #fff1e6; display: inline-block; padding: 5px 20px; border-radius: 80px; margin: 12px 0; }
+    .gracias { font-size: 1rem; color: #a57355; }
+    
+    /* ===== SECCIÓN MISIÓN, VISIÓN, VALORES ===== */
+    .mvv-section {
+      margin: 2rem 0 2rem 0;
+    }
+    .mvv-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      justify-content: center;
+    }
+    .mvv-card {
+      flex: 1;
+      min-width: 200px;
+      background: white;
+      border-radius: 32px;
+      padding: 1.5rem 1rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      border: 2px solid #ffe0cc;
+    }
+    .mvv-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+    .mvv-card.agrandado {
+      transform: scale(1.05);
+      box-shadow: 0 20px 35px rgba(0,0,0,0.15);
+      border-color: #f7b787;
+      background: linear-gradient(135deg, #fff9f0 0%, #ffe6d5 100%);
+      z-index: 10;
+    }
+    .mvv-icono {
+      font-size: 3rem;
+      margin-bottom: 0.5rem;
+    }
+    .mvv-titulo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #be7c54;
+      margin-bottom: 0.5rem;
+    }
+    .mvv-contenido {
+      font-size: 0.95rem;
+      color: #6b4c32;
+      line-height: 1.5;
+      max-height: 80px;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+    .mvv-card.agrandado .mvv-contenido {
+      max-height: 300px;
+    }
+    .mvv-card .leer-mas {
+      display: inline-block;
+      margin-top: 8px;
+      font-size: 0.75rem;
+      color: #e28644;
+      font-weight: 600;
+    }
+    
+    /* Catálogo */
+    .section-title { font-size: 2rem; font-weight: 600; margin: 2rem 0 1rem 0; border-left: 8px solid #FBBF9B; padding-left: 0.5rem; color: #956b48; }
+    .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 1.5rem; }
+    .product-card { background: white; border-radius: 28px; padding: 1rem; text-align: center; border: 1px solid #ffe6da; transition: 0.3s; box-shadow: 0 2px 8px rgba(0,0,0,0.03); cursor: pointer; }
+    .product-card:hover { transform: translateY(-5px); box-shadow: 0 12px 25px rgba(0,0,0,0.1); border-color: #ffd2bb; }
+    .product-img { width: 120px; height: 120px; object-fit: cover; border-radius: 20px; margin-bottom: 10px; transition: transform 0.2s; cursor: pointer; }
+    .product-card:hover .product-img { transform: scale(1.02); }
+    .product-emoji { font-size: 3rem; margin-bottom: 8px; cursor: pointer; }
+    .product-name { font-size: 1rem; font-weight: 600; color: #a2613c; margin: 5px 0; }
+    .product-price { font-size: 0.9rem; font-weight: 700; color: #e28644; background: #fff2e9; display: inline-block; padding: 4px 12px; border-radius: 50px; }
+    .catalogo-tienda, .catalogo-reposteria { background: rgba(255,243,230,0.4); border-radius: 48px; padding: 0.8rem 1rem 1.8rem; margin-bottom: 1rem; }
+    
+    /* Ubicación */
+    .ubicacion-card { background: #F0E6FF; border-radius: 38px; padding: 1.5rem 2rem; margin: 1.5rem 0 2rem; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 15px; }
+    .direccion { font-size: 1.2rem; font-weight: 600; }
+    .btn-mapa { background: #ffd7be; padding: 10px 24px; border-radius: 60px; text-decoration: none; color: #825a3b; font-weight: bold; display: inline-block; transition: 0.2s; }
+    .btn-mapa:hover { background: #ffc9a9; transform: scale(1.02); }
+    
+    /* Sección de Opiniones */
+    .opiniones-section, .clientes-felices-section {
+      background: white;
+      border-radius: 42px;
+      padding: 1.8rem;
+      margin: 2rem 0;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+      border: 1px solid #ffe3d4;
+    }
+    .form-group {
+      margin-bottom: 1.2rem;
+    }
+    label {
+      font-weight: 600;
+      color: #aa7a56;
+      display: block;
+      margin-bottom: 8px;
+    }
+    input, textarea, select {
+      width: 100%;
+      padding: 12px 18px;
+      border-radius: 38px;
+      border: 1px solid #fadcbe;
+      background: #fffdfa;
+      font-family: inherit;
+      font-size: 1rem;
+    }
+    textarea {
+      border-radius: 28px;
+      resize: vertical;
+    }
+    .btn-enviar-whatsapp {
+      background: #25D366;
+      border: none;
+      padding: 14px 32px;
+      border-radius: 48px;
+      font-weight: 700;
+      color: white;
+      cursor: pointer;
+      font-size: 1rem;
+      font-family: inherit;
+      width: 100%;
+      max-width: 300px;
+      transition: 0.2s;
+    }
+    .btn-enviar-whatsapp:hover {
+      background: #128C7E;
+      transform: scale(1.02);
+    }
+    .mensaje-feedback {
+      margin-top: 20px;
+      padding: 12px;
+      border-radius: 60px;
+      text-align: center;
+      display: none;
+    }
+    
+    /* Sección Cliente Feliz - Galería */
+    .galeria-felices {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+    .tarjeta-feliz {
+      background: #fffef7;
+      border-radius: 32px;
+      padding: 1rem;
+      text-align: center;
+      border: 2px solid #ffe0cc;
+      transition: 0.3s;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+    .tarjeta-feliz:hover {
+      transform: translateY(-5px);
+      border-color: #f7b787;
+    }
+    .img-cliente {
+      width: 180px;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 28px;
+      margin-bottom: 12px;
+      border: 3px solid #ffddbb;
+    }
+    .nombre-cliente-feliz {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #be7c54;
+      margin: 8px 0;
+    }
+    .estrellitas-cliente {
+      font-size: 1.3rem;
+      margin: 5px 0;
+    }
+    .comentario-cliente {
+      font-size: 0.9rem;
+      color: #7a5a42;
+      font-style: italic;
+      margin-top: 8px;
+    }
+    .btn-subir-foto {
+      background: #e2b28b;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 48px;
+      font-weight: 600;
+      color: white;
+      cursor: pointer;
+      font-family: inherit;
+      margin-bottom: 1rem;
+      transition: 0.2s;
+    }
+    .btn-subir-foto:hover {
+      background: #d19d6f;
+    }
+    .form-foto {
+      background: #fff5ee;
+      padding: 1.2rem;
+      border-radius: 32px;
+      margin-bottom: 1.5rem;
+      display: none;
+    }
+    .form-foto.mostrar {
+      display: block;
+    }
+    .rating-input {
+      display: flex;
+      gap: 10px;
+      font-size: 2rem;
+      cursor: pointer;
+      justify-content: center;
+      margin: 10px 0;
+    }
+    .rating-star {
+      color: #ffcd94;
+      transition: 0.1s;
+    }
+    .rating-star.active {
+      color: #f7b05e;
+    }
+    
+    /* MODAL PARA AMPLIAR IMAGEN */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 10000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.85);
+      backdrop-filter: blur(5px);
+      justify-content: center;
+      align-items: center;
+      animation: fadeIn 0.3s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .modal-content {
+      background: linear-gradient(135deg, #fff9f0 0%, #ffe6d5 100%);
+      border-radius: 48px;
+      max-width: 90%;
+      width: 420px;
+      text-align: center;
+      padding: 2rem;
+      position: relative;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+      animation: slideUp 0.3s ease;
+      border: 2px solid #ffddbb;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .modal-img {
+      width: 200px;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 30px;
+      margin-bottom: 1rem;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      border: 3px solid white;
+    }
+    .modal-emoji {
+      font-size: 4rem;
+      margin-bottom: 0.5rem;
+    }
+    .modal-product-name {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #be7c54;
+      margin: 0.5rem 0;
+    }
+    .modal-product-price {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: #e28644;
+      background: white;
+      display: inline-block;
+      padding: 5px 20px;
+      border-radius: 50px;
+      margin: 10px 0;
+    }
+    .modal-phrase {
+      font-size: 1.1rem;
+      font-style: italic;
+      color: #a04000;
+      background: rgba(255,230,200,0.8);
+      padding: 12px 18px;
+      border-radius: 60px;
+      margin: 15px 0;
+      font-weight: 500;
+      line-height: 1.4;
+    }
+    .modal-close {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      font-size: 2rem;
+      cursor: pointer;
+      color: #be7c54;
+      transition: 0.2s;
+      background: rgba(255,255,255,0.6);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-close:hover { background: #ffd5b5; transform: scale(1.1); }
+    .btn-comprar-modal {
+      background: #e2b28b;
+      border: none;
+      padding: 12px 28px;
+      border-radius: 60px;
+      font-weight: 800;
+      font-size: 1rem;
+      color: white;
+      cursor: pointer;
+      font-family: inherit;
+      margin-top: 10px;
+      transition: 0.2s;
+      width: 80%;
+    }
+    .btn-comprar-modal:hover { background: #d19d6f; transform: scale(1.02); }
+    
+    /* Dulces cayendo */
+    .sweet-rain { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; overflow: hidden; }
+    .falling-sweet { position: absolute; font-size: 1.8rem; animation: fall linear forwards; opacity: 0.7; pointer-events: none; filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.1)); }
+    @keyframes fall { 0% { transform: translateY(-20vh) rotate(0deg); opacity: 0.9; } 100% { transform: translateY(110vh) rotate(360deg); opacity: 0; } }
+    
+    footer { text-align: center; margin-top: 3rem; color: #b58f6e; padding-top: 1.5rem; border-top: 1px solid #ffe0cf; }
+    @media (max-width: 650px) { 
+      .product-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); } 
+      .section-title { font-size: 1.5rem; } 
+      .logo-circulo-grande { max-width: 220px; } 
+      .modal-content { width: 90%; padding: 1.5rem; } 
+      .modal-img { width: 150px; height: 150px; }
+      .mvv-card { min-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+<div class="sweet-rain" id="sweetRainContainer"></div>
+<div class="container">
+  <!-- APARTADO 1: LOGO (CÍRCULO GRANDE - LOGO CUBRE COMPLETAMENTE, SIN INTERACCIÓN) -->
+  <div class="hero-logo-area">
+    <div class="logo-circulo-grande" id="logoContainer">
+      <img id="logoImg" class="logo-preview" src="" style="display: none;">
+      <div id="logoPlaceholder" class="logo-placeholder-text">🍬 ESPACIO PARA LOGO<br> (Círculo 1:1)</div>
+    </div>
+    <div class="welcome-text">
+      <h2>✨ ¡Delicias y Antojos, Caprichos! ✨</h2>
+      <div class="slogan">"El rincón favorito de los antojadizos profesionales"</div>
+      <p class="gracias">🍭 Gracias por tu preferencia — endulzamos tus momentos 🍬</p>
+    </div>
+  </div>
+
+  <!-- APARTADO: MISIÓN, VISIÓN Y VALORES (antes del catálogo) -->
+  <div class="mvv-section">
+    <div class="mvv-container">
+      <!-- MISIÓN -->
+      <div class="mvv-card" id="cardMision">
+        <div class="mvv-icono">🎯</div>
+        <div class="mvv-titulo">Misión</div>
+        <div class="mvv-contenido">
+          Ofrecer a nuestros clientes los antojos más deliciosos y refrescantes de Talpa de Allende, preparados con ingredientes de calidad y un servicio lleno de calidez, creando momentos felices en cada bocado.
+          <span class="leer-mas">(Haz clic para expandir)</span>
+        </div>
+      </div>
+      <!-- VISIÓN -->
+      <div class="mvv-card" id="cardVision">
+        <div class="mvv-icono">🌟</div>
+        <div class="mvv-titulo">Visión</div>
+        <div class="mvv-contenido">
+          Convertirnos en el rincón favorito de los antojadizos profesionales de Talpa y la región, siendo reconocidos por nuestra creatividad, calidad y el amor que ponemos en cada producto que preparamos.
+          <span class="leer-mas">(Haz clic para expandir)</span>
+        </div>
+      </div>
+      <!-- VALORES -->
+      <div class="mvv-card" id="cardValores">
+        <div class="mvv-icono">💖</div>
+        <div class="mvv-titulo">Valores</div>
+        <div class="mvv-contenido">
+          🤝 Calidez en el servicio<br>
+          🍓 Calidad en cada ingrediente<br>
+          😊 Honestidad y transparencia<br>
+          🎉 Pasión por los antojos<br>
+          🌟 Compromiso con la comunidad talpense
+          <span class="leer-mas">(Haz clic para expandir)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- APARTADO 2: TIENDA -->
+  <div class="catalogo-tienda">
+    <div class="section-title">🍿 Tienda | Antojitos y Bebidas 🥤</div>
+    <div class="product-grid" id="tiendaGrid"></div>
+  </div>
+
+  <!-- APARTADO 3: REPOSTERÍA -->
+  <div class="catalogo-reposteria">
+    <div class="section-title">🧁 Repostería Dulce 🍰</div>
+    <div class="product-grid" id="reposteriaGrid"></div>
+  </div>
+
+  <!-- APARTADO 4: UBICACIÓN -->
+  <div class="section-title">📍 Encuéntranos en Talpa de Allende</div>
+  <div class="ubicacion-card">
+    <div class="direccion">🏡 Ramón Corona #35, Talpa de Allende, Jalisco, México</div>
+    <a href="#" id="mapsLink" target="_blank" class="btn-mapa">🗺️ Ver en Google Maps →</a>
+  </div>
+
+  <!-- APARTADO 5: OPINIONES (envío a WhatsApp con número +52 388 103 6277) -->
+  <div class="opiniones-section">
+    <div class="section-title" style="margin-top:0;">💬 Cuéntanos tu experiencia</div>
+    <p style="margin-bottom: 1rem;">Tu opinión es muy importante para nosotros. ¡Déjanos saber cómo te fue!</p>
+    <form id="opinionForm">
+      <div class="form-group">
+        <label>Tu nombre</label>
+        <input type="text" id="nombreOpinion" placeholder="Ej: Lupita Martínez" required>
+      </div>
+      <div class="form-group">
+        <label>Tipo de mensaje</label>
+        <select id="tipoMensaje">
+          <option value="😊 Felicitación">😊 Felicitación</option>
+          <option value="💡 Sugerencia">💡 Sugerencia</option>
+          <option value="😔 Queja / Mejora">😔 Queja / Mejora</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Tu mensaje</label>
+        <textarea rows="3" id="mensajeOpinion" placeholder="Cuéntanos tu experiencia con nuestros productos..." required></textarea>
+      </div>
+      <button type="submit" class="btn-enviar-whatsapp">📱 Enviar por WhatsApp</button>
+      <div id="whatsappFeedback" class="mensaje-feedback"></div>
+    </form>
+  </div>
+
+  <!-- APARTADO 6: CLIENTE FELIZ (Subir foto y calificación) -->
+  <div class="clientes-felices-section">
+    <div class="section-title" style="margin-top:0;">⭐ Cliente Feliz ⭐</div>
+    <p style="margin-bottom: 1rem;">Comparte tu foto con nuestro producto y cuéntanos qué te pareció.</p>
+    
+    <button class="btn-subir-foto" id="btnMostrarFormFoto">📸 Subir mi foto como cliente feliz</button>
+    
+    <div id="formFotoContainer" class="form-foto">
+      <h3 style="color:#be7c54; margin-bottom:1rem;">Comparte tu experiencia</h3>
+      <div class="form-group">
+        <label>Tu nombre</label>
+        <input type="text" id="nombreClienteFeliz" placeholder="Ej: Ana García">
+      </div>
+      <div class="form-group">
+        <label>Calificación con estrellas</label>
+        <div class="rating-input" id="ratingEstrellas">
+          <span class="rating-star" data-value="1">★</span>
+          <span class="rating-star" data-value="2">★</span>
+          <span class="rating-star" data-value="3">★</span>
+          <span class="rating-star" data-value="4">★</span>
+          <span class="rating-star" data-value="5">★</span>
+        </div>
+        <input type="hidden" id="calificacionEstrellas" value="5">
+      </div>
+      <div class="form-group">
+        <label>Sube tu foto con el producto (JPG/PNG)</label>
+        <input type="file" id="fotoCliente" accept="image/jpeg, image/png">
+      </div>
+      <div class="form-group">
+        <label>Tu comentario (opcional)</label>
+        <textarea rows="2" id="comentarioClienteFeliz" placeholder="¡Me encantó el producto!"></textarea>
+      </div>
+      <button class="btn-enviar-whatsapp" id="btnGuardarFoto" style="background:#e2b28b;">📤 Compartir experiencia</button>
+    </div>
+    
+    <div id="galeriaFelices" class="galeria-felices"></div>
+  </div>
+
+  <footer>🍬 Delicias y Antojos, Caprichos — Donde cada antojo se vuelve mágico 🌟</footer>
+</div>
+
+<!-- MODAL PARA AMPLIAR IMAGEN DE PRODUCTOS -->
+<div id="productModal" class="modal">
+  <div class="modal-content">
+    <span class="modal-close" id="modalClose">&times;</span>
+    <div id="modalImageContainer"></div>
+    <div class="modal-product-name" id="modalName"></div>
+    <div class="modal-product-price" id="modalPrice"></div>
+    <div class="modal-phrase" id="modalPhrase"></div>
+    <button class="btn-comprar-modal" id="modalBuyBtn">🛒 ¡LO QUIERO AHORA! 🛒</button>
+  </div>
+</div>
+
+<script>
+  // ============================================================
+  // MISIÓN, VISIÓN, VALORES - Click para agrandar
+  // ============================================================
+  const cards = document.querySelectorAll('.mvv-card');
+  cards.forEach(card => {
+    card.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (card.classList.contains('agrandado')) {
+        card.classList.remove('agrandado');
+      } else {
+        cards.forEach(c => c.classList.remove('agrandado'));
+        card.classList.add('agrandado');
+      }
+    });
+  });
+
+  // ============================================================
+  // PRODUCTOS CON IMÁGENES Y FRASES
+  // ============================================================
+  
+  const tiendaProductos = [
+    { nombre: "Boing G/C preparados", precio: "$25/35 MXN", emoji: "🥭", img: "delicias y caprichos/Boing Loco.jpg", frase: "💖 ¡Un sorbo y te transportas al paraíso! El sabor que endulza tu alma. ¿Te lo vas a perder? 💖" },
+    { nombre: "Cerveza", precio: "$70 MXN", emoji: "🍺", img: "delicias y caprichos/Cerveza.jpg", frase: "🍻 La cerveza más feliz del pueblo. Cada sorbo es un motivo para sonreír. ¡Pide la tuya! 🍻" },
+    { nombre: "Caguama preparada", precio: "$100 MXN", emoji: "🍻", img: "delicias y caprichos/Caguamas preparadas.jpg", frase: "🎉 ¡La fiesta en tu boca! Perfecta para compartir con los que más quieres. ¿Te animas? 🎉" },
+    { nombre: "Chamoyadas C/G", precio: "$8/20 MXN", emoji: "🍧", img: "delicias y caprichos/Chamoyadas.jpg", frase: "🌶️🍓 Dulce, picante y adictiva. Una explosión de felicidad que querrás repetir. 🌶️🍓" },
+    { nombre: "Azulitos C/G", precio: "$25/50 MXN", emoji: "💙", img: "delicias y caprichos/Azulitos.jpg", frase: "💙 Mágicamente azul, increíblemente delicioso. ¡El antojo que roba corazones! 💙" },
+    { nombre: "Azulitos con Vodka C/G", precio: "$50/100 MXN", emoji: "💙🍸", img: "delicias y caprichos/Azulitos.jpg", frase: "💙🍸 El toque mágico del vodka se une con el azul más divertido. ¡Una experiencia que te eleva! 💙🍸" },
+    { nombre: "Rusas C/G", precio: "$25/50 MXN", emoji: "🌯", img: "delicias y caprichos/Rusa.jpg", frase: "🌯 Crujientes por fuera, tiernas por dentro. ¡Una mordida y te enamoras! 🌯" },
+    { nombre: "Rusas con Vodka", precio: "$50/75 MXN", emoji: "🌯🍸", img: "delicias y caprichos/Rusa.jpg", frase: "🌯🍸 La clásica rusa ahora con un toque especial. Crujiente, suave y con el sabor único del vodka. ¡Pruébala! 🌯🍸" },
+    { nombre: "Tostilocos", precio: "$50 MXN", emoji: "🌮", img: "delicias y caprichos/tostilocos.jpg", frase: "🎊 La locura más deliciosa que probarás hoy. ¡Un manjar que no puedes rechazar! 🎊" },
+    { nombre: "Maruchan con elote", precio: "$100 MXN", emoji: "🍜🌽", img: "delicias y caprichos/Marucha conelote.jpg", frase: "🍜 Calientito, reconfortante y lleno de sabor. El abrazo que tu estómago necesita. 🍜" },
+    { nombre: "Gomitas enchiladas", precio: "$20 MXN", emoji: "🐻🌶️", img: "delicias y caprichos/Gomitas.jpg", frase: "🐻 Dulce tentación con toque picosito. ¡No podrás comer solo una! 🐻" },
+    { nombre: "Fruta Picada", precio: "$50 MXN", emoji: "🍓", img: "delicias y caprichos/Fruta cubierta.jpg", frase: "🍎 Saludable pero pecaminosamente rico. ¡La fruta más feliz del mundo! 🍎" },
+    { nombre: "Duritos preparados", precio: "$20 MXN", emoji: "🍟", img: "delicias y caprichos/Durito preparado.jpg", frase: "🔥 Crujientes, jugosos y llenos de sabor. ¡La adicción más deliciosa! 🔥" },
+    { nombre: "Palomitas y Duritos", precio: "$10 MXN", emoji: "🍿", img: "delicias y caprichos/Palomitas.jpg", frase: "🍿 Suavecitas, esponjosas, perfectas. El acompañante ideal para tus momentos felices. 🍿" }
+  ];
+
+  const reposteriaProductos = [
+    { nombre: "Pasteles (porción)", precio: "$40 MXN", emoji: "🍰", img: "delicias y caprichos/Pasteles.jpg", frase: "🎂 ¿Un mal día? Este pastel lo arregla. ¿Un buen día? ¡Lo hace increíble! Cómpralo y sé feliz. 🎂" },
+    { nombre: "Mini hot cakes (14 pzs)", precio: "$50 MXN", emoji: "🥞", img: "delicias y caprichos/Mini horcakes.jpg", frase: "🥞 Esponjositos y llenos de amor. Cada mordida es un 'te quiero' en tu paladar. 🥞" }
+  ];
+
+  function renderProductGrid(containerId, productos) {
+    const grid = document.getElementById(containerId);
+    if (!grid) return;
+    grid.innerHTML = "";
+    productos.forEach((prod) => {
+      const card = document.createElement("div");
+      card.className = "product-card";
+      
+      let imagenHTML = '';
+      if (prod.img && prod.img !== "") {
+        imagenHTML = `<img src="${prod.img}" alt="${prod.nombre}" class="product-img" onerror="this.style.display='none'; this.nextSibling.style.display='block';">`;
+      }
+      const emojiHTML = `<div class="product-emoji" style="${prod.img ? 'display:none' : 'display:block'}">${prod.emoji}</div>`;
+      
+      card.innerHTML = `
+        ${imagenHTML}
+        ${emojiHTML}
+        <div class="product-name">${prod.nombre}</div>
+        <div class="product-price">${prod.precio}</div>
+      `;
+      
+      card.addEventListener('click', () => abrirModal(prod));
+      grid.appendChild(card);
+    });
+  }
+
+  function abrirModal(producto) {
+    const modal = document.getElementById('productModal');
+    const modalImageContainer = document.getElementById('modalImageContainer');
+    const modalName = document.getElementById('modalName');
+    const modalPrice = document.getElementById('modalPrice');
+    const modalPhrase = document.getElementById('modalPhrase');
+    
+    if (producto.img && producto.img !== "") {
+      modalImageContainer.innerHTML = `<img src="${producto.img}" alt="${producto.nombre}" class="modal-img" onerror="this.src='';">`;
+    } else {
+      modalImageContainer.innerHTML = `<div class="modal-emoji">${producto.emoji}</div>`;
+    }
+    
+    modalName.textContent = producto.nombre;
+    modalPrice.textContent = producto.precio;
+    modalPhrase.textContent = producto.frase;
+    modal.style.display = "flex";
+    
+    document.getElementById('modalBuyBtn').onclick = () => {
+      alert(`🍬 ¡Excelente elección! "${producto.nombre}" te espera. \n\n${producto.frase}\n\n📍 Ramón Corona #35, Talpa de Allende - ¡Te esperamos con una sonrisa! 🍬`);
+      modal.style.display = "none";
+    };
+  }
+
+  renderProductGrid("tiendaGrid", tiendaProductos);
+  renderProductGrid("reposteriaGrid", reposteriaProductos);
+
+  // Cerrar modal
+  const modal = document.getElementById('productModal');
+  document.getElementById('modalClose').onclick = () => modal.style.display = "none";
+  window.onclick = (e) => { if (e.target === modal) modal.style.display = "none"; };
+
+  // ============================================================
+  // OPINIONES - ENVÍO A WHATSAPP con el número +52 388 103 6277
+  // ============================================================
+  const numeroWhatsApp = "5213881036277";  // Formato internacional para México: +52 388 103 6277
+  
+  document.getElementById('opinionForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const nombre = document.getElementById('nombreOpinion').value.trim();
+    const tipo = document.getElementById('tipoMensaje').value;
+    const mensaje = document.getElementById('mensajeOpinion').value.trim();
+    const feedback = document.getElementById('whatsappFeedback');
+    
+    if (!nombre || !mensaje) {
+      feedback.style.display = "block";
+      feedback.style.background = "#f8d7da";
+      feedback.style.color = "#721c24";
+      feedback.innerHTML = "⚠️ Por favor completa tu nombre y mensaje.";
+      setTimeout(() => feedback.style.display = "none", 3000);
+      return;
+    }
+    
+    const textoCompleto = `*Nueva sugerencia de ${nombre}*%0A%0A📋 *Tipo:* ${tipo}%0A💬 *Mensaje:* ${mensaje}%0A%0A✨ *Delicias y Antojos, Caprichos* ✨`;
+    const url = `https://wa.me/${numeroWhatsApp}?text=${textoCompleto}`;
+    
+    feedback.style.display = "block";
+    feedback.style.background = "#d4edda";
+    feedback.style.color = "#155724";
+    feedback.innerHTML = "📱 Redirigiendo a WhatsApp... Envía el mensaje y ¡gracias por tu opinión!";
+    
+    setTimeout(() => {
+      window.open(url, '_blank');
+      document.getElementById('opinionForm').reset();
+      setTimeout(() => feedback.style.display = "none", 5000);
+    }, 1000);
+  });
+
+  // ============================================================
+  // CLIENTE FELIZ - Subir foto y calificación
+  // ============================================================
+  let clientesFelices = JSON.parse(localStorage.getItem('clientesFelices')) || [];
+  
+  function renderGaleria() {
+    const galeria = document.getElementById('galeriaFelices');
+    if (!galeria) return;
+    galeria.innerHTML = '';
+    if (clientesFelices.length === 0) {
+      galeria.innerHTML = '<p style="text-align:center; color:#b58f6e;">⭐ Sé el primero en compartir tu experiencia como Cliente Feliz ⭐</p>';
+      return;
+    }
+    clientesFelices.forEach((cliente, idx) => {
+      const tarjeta = document.createElement('div');
+      tarjeta.className = 'tarjeta-feliz';
+      const estrellas = '★'.repeat(cliente.calificacion) + '☆'.repeat(5 - cliente.calificacion);
+      tarjeta.innerHTML = `
+        <img src="${cliente.foto}" class="img-cliente" alt="Foto de ${cliente.nombre}">
+        <div class="nombre-cliente-feliz">${cliente.nombre}</div>
+        <div class="estrellitas-cliente" style="color:#f7b05e;">${estrellas}</div>
+        <div class="comentario-cliente">"${cliente.comentario || '¡Delicioso! Lo recomiendo mucho'}"</div>
+      `;
+      galeria.appendChild(tarjeta);
+    });
+  }
+  
+  // Estrellas para calificación
+  const ratingStars = document.querySelectorAll('#ratingEstrellas .rating-star');
+  let currentRating = 5;
+  function setRatingStars(value) {
+    currentRating = value;
+    document.getElementById('calificacionEstrellas').value = value;
+    ratingStars.forEach(star => {
+      const val = parseInt(star.dataset.value);
+      if (val <= value) star.classList.add('active');
+      else star.classList.remove('active');
+    });
+  }
+  ratingStars.forEach(star => {
+    star.addEventListener('click', () => setRatingStars(parseInt(star.dataset.value)));
+  });
+  setRatingStars(5);
+  
+  document.getElementById('btnMostrarFormFoto').addEventListener('click', () => {
+    const form = document.getElementById('formFotoContainer');
+    form.classList.toggle('mostrar');
+  });
+  
+  document.getElementById('btnGuardarFoto').addEventListener('click', () => {
+    const nombre = document.getElementById('nombreClienteFeliz').value.trim();
+    const fotoInput = document.getElementById('fotoCliente');
+    const comentario = document.getElementById('comentarioClienteFeliz').value.trim();
+    const calificacion = parseInt(document.getElementById('calificacionEstrellas').value);
+    const feedbackFoto = document.getElementById('whatsappFeedback');
+    
+    if (!nombre) {
+      feedbackFoto.style.display = "block";
+      feedbackFoto.style.background = "#f8d7da";
+      feedbackFoto.style.color = "#721c24";
+      feedbackFoto.innerHTML = "⚠️ Por favor escribe tu nombre.";
+      setTimeout(() => feedbackFoto.style.display = "none", 3000);
+      return;
+    }
+    
+    if (!fotoInput.files || !fotoInput.files[0]) {
+      feedbackFoto.style.display = "block";
+      feedbackFoto.style.background = "#f8d7da";
+      feedbackFoto.style.color = "#721c24";
+      feedbackFoto.innerHTML = "⚠️ Por favor selecciona una foto para compartir.";
+      setTimeout(() => feedbackFoto.style.display = "none", 3000);
+      return;
+    }
+    
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const fotoData = e.target.result;
+      clientesFelices.unshift({
+        nombre: nombre,
+        foto: fotoData,
+        calificacion: calificacion,
+        comentario: comentario || "¡Me encantó este producto!",
+        fecha: new Date().toISOString()
+      });
+      if (clientesFelices.length > 12) clientesFelices = clientesFelices.slice(0, 12);
+      localStorage.setItem('clientesFelices', JSON.stringify(clientesFelices));
+      renderGaleria();
+      
+      document.getElementById('nombreClienteFeliz').value = '';
+      document.getElementById('fotoCliente').value = '';
+      document.getElementById('comentarioClienteFeliz').value = '';
+      setRatingStars(5);
+      document.getElementById('formFotoContainer').classList.remove('mostrar');
+      
+      feedbackFoto.style.display = "block";
+      feedbackFoto.style.background = "#d4edda";
+      feedbackFoto.style.color = "#155724";
+      feedbackFoto.innerHTML = "✅ ¡Gracias por compartir tu experiencia como Cliente Feliz! Tu foto ya está en nuestra galería.";
+      setTimeout(() => feedbackFoto.style.display = "none", 4000);
+    };
+    reader.readAsDataURL(fotoInput.files[0]);
+  });
+  
+  renderGaleria();
+
+  // ============================================================
+  // LOGO - Círculo: SIN INTERACCIÓN, solo muestra imagen guardada (si existe)
+  // No se puede cambiar, el círculo ya no es clickeable.
+  // ============================================================
+  const logoImgTag = document.getElementById("logoImg");
+  const logoPlaceholderDiv = document.getElementById("logoPlaceholder");
+  // Cargar logo desde localStorage si existe
+  const storedLogo = localStorage.getItem("logoEmpresa");
+  if (storedLogo) {
+    logoImgTag.src = storedLogo;
+    logoImgTag.style.display = "block";
+    logoPlaceholderDiv.style.display = "none";
+  } else {
+    // Si no hay logo, mostramos un placeholder con texto (sin interacción)
+    logoImgTag.style.display = "none";
+    logoPlaceholderDiv.style.display = "block";
+    logoPlaceholderDiv.innerHTML = "🍬 LOGO<br>(Círculo 1:1)";
+  }
+
+  // Google Maps
+  const mapsLink = document.getElementById("mapsLink");
+  const direccion = encodeURIComponent("Ramón Corona #35, Talpa de Allende, Jalisco, México");
+  mapsLink.href = `https://www.google.com/maps/search/?api=1&query=${direccion}`;
+
+  // DULCES CAYENDO
+  const candies = ["🍬", "🍭", "🍫", "🍡", "🍩", "🧁", "🍪", "🍬", "🍬", "🍭"];
+  function createFallingSweet() {
+    const sweetDiv = document.createElement("div");
+    sweetDiv.className = "falling-sweet";
+    const candy = candies[Math.floor(Math.random() * candies.length)];
+    sweetDiv.innerHTML = candy;
+    const size = Math.random() * 1.5 + 1.2;
+    sweetDiv.style.fontSize = `${size}rem`;
+    sweetDiv.style.left = `${Math.random() * 100}%`;
+    sweetDiv.style.animationDuration = `${Math.random() * 5 + 3}s`;
+    sweetDiv.style.animationDelay = `${Math.random() * 2}s`;
+    document.getElementById("sweetRainContainer").appendChild(sweetDiv);
+    setTimeout(() => { if (sweetDiv && sweetDiv.remove) sweetDiv.remove(); }, 8000);
+  }
+  setInterval(() => { if (document.getElementById("sweetRainContainer")) createFallingSweet(); }, 600);
+  for (let i = 0; i < 8; i++) { setTimeout(() => createFallingSweet(), i * 200); }
+</script>
+</body>
+</html>  
